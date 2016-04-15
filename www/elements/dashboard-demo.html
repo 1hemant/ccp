@@ -1,0 +1,459 @@
+
+<dom-module id="dashboard-demo">
+<script src="../scripts/getWorkboardData.js"></script>
+<script src="../scripts/getKettleData.js"></script>    
+<script src="../scripts/getVisualisationData.js"></script>
+<link rel="import" href="../Config/config.html"/>
+
+
+<template>
+     <div class="card-wrap">
+          <div class="container">
+            <div class="row">
+              <div class="col-lg-4 col-sm-4 col-xs-12">               
+                  <div id="container" style="width:100%;margin-right:10px" style="display:none">
+                      
+                  </div>
+            </div>
+          </div>
+        </div> 
+    </div>
+    <div id="loader" style="display:none"</div>
+    <createHighchart-element></createHighchart-element>
+</template>
+<script>
+    var workboardData;
+    var kettleData;
+    var visualData; 
+    var option = [];
+    var workboardColumnInfo = [];
+    //var vData;
+    
+        var workboard=[];
+        var visualisation=[];
+        var kettle=[]; 
+        var workboardDataConfiguration = [];
+        var decryptedData = [];
+        var kettleResultset = [];		
+        var visualisationConfiguration =[];
+
+    Polymer({
+        is:"dashboard-demo",
+        createDashboard:function(id)
+        {
+            var self=this;
+            //var requestData = {"data":{"workboard-id":id,"params":{}}}; 
+            console.log(id);
+            self.lodingStart();
+            $.when(
+                    workboardData = getWorkboardData(id),
+                    visualData = getVisualisationData(id),
+                    kettleData = getKettleData(id)
+                    /*
+                $.ajax({
+                     url: "http://10.90.21.43:8888/workboard-service/getWorkboard?workboard=".concat(id),               
+                     type: "POST",
+                     beforeSend: function(xhr){xhr.setRequestHeader('AccessToken',localStorage.getItem("accessToken"));},
+                     success: function(object)
+                     { 
+                               workboardData=object;     
+                               // console.log(workboardData);
+                     }
+                  }),
+
+                $.ajax({
+                    url: "http://10.90.21.43:8888/visualization-service/getVisualizationData?workboard_id=".concat(id),                
+                    type: "POST",
+                    beforeSend: function(xhr){xhr.setRequestHeader('AccessToken',localStorage.getItem("accessToken"));},
+                    success: function(object)
+                    { 
+                       visualData=object;
+                        //vData=object;
+                        //console.log(visualData);
+                    }
+                 }),
+                $.ajax({
+                    url: 'http://10.90.21.43:8888/kettle-service/kettle',
+                    type: 'POST',
+                    beforeSend: function(xhr){xhr.setRequestHeader('AccessToken',localStorage.getItem('accessToken'));},
+                    data: JSON.stringify(requestData),
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'json',
+                    timeout:300000,
+                    async: true,
+                    success: function(object) 
+                    {
+                       kettleData=object; 
+                       // console.log(kettleData);
+                        //self.processDashboardData();
+                    }
+                })*/  
+                        
+            ).done(function(){
+                     self.loadingStop();
+                 });
+            $('#container').css("display","block");
+            //self.startfunction(workboardData,visualData,kettleData);
+            //console.log("I am here");
+            self.createDashboard1();
+        
+        },
+        createDashboard1:function()
+        {    
+            //console.log(workboardData);
+              var self=this;
+              $.each(workboardData,function(index,value)
+              {
+               
+                   workboard.push(value.configuration);
+                   workboardColumnInfo.push(workboardData[index].configuration.columnInfo);
+                  $.each(visualData,function(i,e)
+                   {
+                          if(index==i)                                   
+                              visualisation.push(e.configuration);
+                   });                 
+                   $.each(kettleData.data,function(i,e)
+                   {
+                          if(index==i)
+                              kettle.push(e); 
+                   });
+                   //console.log(JSONfn.stringify(visualData[index].configuration.result));
+                   option = JSONfn.stringify(visualData[index].configuration.result);
+                   self.normalize(index,workboard,visualisation,kettle,option,workboardColumnInfo)
+                    self.processChartData(index,workboard,visualisation,kettle,option,workboardColumnInfo);             
+              }); 
+        },
+      processChartData:function(key,workboard,visualisation,kettle,option,workboardColumnInfo)
+        {
+            var self=this;
+            console.log("I am in processChartData:function");
+            //console.log(workboard);
+            //console.log(key);
+            if(workboardData[key].configuration.itemType=="chart-type-1"){
+                //self.customPreProcessor('data',atob(workboardData[key].configuration.columnInfo));
+                //var funct = new Function('data',atob(workboardData[key].configuration.columnInfo));
+                console.log("i am in loop");
+                options = JSONfn.stringify(visualisation[key].configuration.result)
+                var div=document.createElement('paper-material');
+                div.setAttribute("elevation","2");
+                $(div).css("background-color","white");
+                $(div).css("height","auto");                
+                $(div).css("margin","10px");
+                $(div).css("margin-bottom","20px");
+                $(div).css("padding","5px");
+                div.setAttribute("id","id"+key);
+                var title = document.createElement("h3");
+                title.innerHTML="Chart";
+                div.appendChild(title);                
+                var container=document.getElementById("container");
+                container.appendChild(div);
+                var id ="#id"+key;
+                option = JSONfn.parse(option);
+                option.chart = {};
+                option.chart.renderTo=id;
+                option = JSONfn.stringify(option);
+
+                //window.alert("hdcdi");
+                //document.getElementsByTagName('createHighchart-element')[0].createHighchart1('div');
+                self.createHighchart(div);
+            }
+            else if(workboard[0].chartType=="Chart"){ 
+                console.log("hello");
+            }
+        },
+        
+        createHighchart: function(div){
+            window.alert("hi");
+                var option = {
+                    chart: {
+                        renderTo: div,
+                        type: 'bar'
+                    },
+                    title: {
+                        text: 'Fruit Consumption'
+                    },
+                    xAxis: {
+                        categories: ['Apples', 'Bananas', 'Oranges']
+                    },
+                    yAxis: {
+                        title: {
+                            text: 'Fruit eaten'
+                        }
+                    },
+                    series: [{
+                        name: 'Jane',
+                        data: [1, 0, 4]
+                    }, {
+                        name: 'John',
+                        data: [5, 7, 3]
+                    }]
+                };
+                //console.log("I am here");
+            var chart1 = new Highcharts.Chart(option);
+        },
+        customPreProcessor: function(data,temp){
+            var func=new Function('data',atob(temp));
+            console.log("3");
+            return func(data);
+        },
+            //visualData, kettleData
+            normalize:function(index,workboard,visualisation,kettle,option,workboardColumnInfo){
+            var result=visualData[index].configuration.result;
+            console.log(result);
+            result['title']={text:""};
+            var chart= document.createElement('paper-material');; 
+            if(result.hasOwnProperty('chart')){
+                delete result.chart['renderTo'];
+                result.chart.renderTo=this.$.chart;
+                //result.chart['width']=(chart.width()-50);
+                //result.chart['height']=(chart.height()-50);
+                //result.chart['options3d']={enabled: true,alpha: 15,beta: 15,depth: 50,viewDistance: 25};
+                }else{
+                     result.chart={
+                      renderTo: this.$.chart,
+                      //width:chart.width()-50,
+                      //height:(chart.height()-50),
+                    }
+                }
+                    result['credits']={"enabled": false};
+                    result["exporting"]={enabled:false};
+                    result['series']=KettleData.series;
+                    if(KettleData.hasOwnProperty('xAxisCategories') && KettleData['xAxisCategories'].length){
+                        if(result.hasOwnProperty('xAxis')){
+                            result['xAxis'].categories=KettleData['xAxisCategories'];
+                        }else{
+                            result['xAxis']={categories:KettleData['xAxisCategories']};
+                        }
+                    }
+
+                    if(KettleData.hasOwnProperty('subtitleText') && KettleData['subtitleText'].length){
+                        if(result.hasOwnProperty('subtitle')){
+                                result['subtitle'].text=KettleData['subtitleText'];
+                        }else{
+                                result['subtitle']={text:KettleData['subtitleText']};
+                        }
+                    }
+
+                    return result;
+        },
+        /*
+        startfunction: function(workboardData,visualData,kettleData){
+           var self=this;
+            $.each(workboardData,function(index,item)
+                {
+                    
+                    workboardDataConfiguration.push(item.configuration);
+                    //decryptedData.push(window.atob(item.configuration.columnInfo));
+                    //workboardConfiguration.push(value.configuration);
+                    $.each(visualData,function(i,e)
+                    {
+                        if(index==i)                                   
+                            visualisationConfiguration.push(e.configuration);
+                    });                 
+                    $.each(kettleData.data,function(i,e)
+                    {
+                        if(index==i)                             
+                            kettleResultset.push(e.resultSet); 
+                            
+                    });     
+
+                    //customPreProcessor(kettleResultset,visualisationConfiguration);
+                    self.draw();
+                })
+
+        },
+
+
+
+        dataProcessing:function(KettleData,visualData){
+            var categoryIndex=-1,y=[];
+            $.each(this.configuration,function(i,e){
+                    if(e.hasOwnProperty('isCategory')){
+                            categoryIndex=e.columnIndex;
+                    }else if(e.hasOwnProperty('isOnY')){
+                     var seriesData={KettleData:[]}
+                            $.each(e,function(key,value){
+                                    seriesData[key]=value;
+                            })
+                            seriesData['name']=seriesData['columnName'];
+                            delete seriesData['columnName'];
+                            seriesData['yAxis']=Number(seriesData['isOnY']);
+                            delete seriesData['isOnY'];
+                            seriesData['index']=seriesData['columnIndex'];
+                            delete seriesData['columnIndex'];
+                            y.push(seriesData);
+                    }
+            });
+
+            var categories=[];
+            $.each(KettleData["resultSet"],function(i,e){
+                    categories.push(e[categoryIndex]);
+                    $.each(y,function(ii,ee){
+                            ee.KettleData.push(e[ee.index]);
+                    });
+            });
+            if(typeof y === 'object' && y.length){
+                    visualData['series']=y;
+            }
+            if(typeof categories === 'object' && categories.length){
+                    if(typeof visualData["xAxis"] !== "undefined"){
+                            visualData["xAxis"].categories=categories;
+                    }else{
+                            visualData["xAxis"]={"categories":categories};
+                    }
+            }
+
+            return visualData;
+        },
+        resize:function(){
+                if(typeof this.chartObj !== 'undefined' && Object.keys(this.chartObj).length){
+                        var chart= $(this.$.panelChart);
+                        this.chartObj.setSize(chart.width()-50,chart.height()-50);
+                        this.chartObj.reflow();
+                }
+        },
+        draw:function(e){	
+        var self=this;
+        //this.loadingStart();
+        try{
+            var visualData=JSONfn.parse(this.visualData);
+                if(this.KettleData.hasOwnProperty(this.dataId) && typeof(this.KettleData[this.dataId]) === 'object' && visualData.hasOwnProperty(this.dataId) && typeof(visualData[this.dataId]) === 'object'){
+                var options=this.normalize(visualData[this.dataId],this.customPreProcessor(this.KettleData[this.dataId].resultSet,this.configuration));
+                    if(typeof this.chartObj !== 'undefined' && Object.keys(this.chartObj).length) {
+                        this.chartObj.destroy();
+                    }
+                    console.log(options);
+        if(options.plotOptions!=undefined){
+            if(options.plotOptions.series!=undefined){
+                options.plotOptions.series["point"]= {
+                    "events": {
+                        "click": function () {
+                            if(this.category!=undefined){
+                                a=[];
+                                a.push(this.category);
+
+                                self.filter[self.dataId]="'"+a.join("','")+"'";
+                                //self.filter[self.dataId]=a;
+                                temp = JSON.stringify(self.filter);
+                                self.filter = JSON.parse(temp);
+                            }
+                        }
+                    }
+                }
+            }
+            else{
+            options.plotOptions["series"]={"point":{
+                "events": {
+                    "click": function () {
+                        if(this.category!=undefined){            
+                            a=[];
+                            a.push(this.category);
+                            self.filter[self.dataId]="'"+a.join("','")+"'";
+                            //self.filter[self.dataId]=a;
+                            temp = JSON.stringify(self.filter);
+                            self.filter = JSON.parse(temp);
+                        } 
+                   }
+                }
+            }}}
+        }
+        this.chartObj=new Highcharts[visualData[this.dataId].configuration.chartType](options,function(){
+            self.resize();
+            //self.loadingStop();
+
+        });
+
+            }
+            }catch(e){
+                console.error(e)
+            }
+        },*/
+        /*
+        toolTipToggle:function(e){
+            e.preventDefault();
+            if(typeof this.chartObj !== 'undefined' && Object.keys(this.chartObj).length){
+                    var element=$(this.$.chart).find('g.highcharts-tooltip');
+                    if(element.css('display') != 'none'){
+                            element.css('display','none');
+                    }else{
+                            element.css('display','inline')
+                    }
+            }
+        },
+        areaChart:function(){
+                if(typeof this.chartObj !== 'undefined' && Object.keys(this.chartObj).length){
+                        this.chartObj.series.forEach(function(e){
+                                e.update({
+            type: 'area'
+        })
+                        })
+                }
+         },
+         lineChart:function(){
+                if(typeof this.chartObj !== 'undefined' && Object.keys(this.chartObj).length){
+                        this.chartObj.series.forEach(function(e){
+                                e.update({
+            type: 'line'
+        })
+                        })
+                }
+         },
+         barChart:function(){
+                if(typeof this.chartObj !== 'undefined' && Object.keys(this.chartObj).length){
+                        this.chartObj.series.forEach(function(e){
+                                e.update({
+            type: 'bar'
+        })
+                        })
+                }
+         },
+         areaSpline:function(){
+                if(typeof this.chartObj !== 'undefined' && Object.keys(this.chartObj).length){
+                        this.chartObj.series.forEach(function(e){
+                                e.update({
+            type: 'areaspline'
+        })
+                        })
+                }
+         },
+         column:function(){
+                if(typeof this.chartObj !== 'undefined' && Object.keys(this.chartObj).length){
+                        this.chartObj.series.forEach(function(e){
+                                e.update({
+            type: 'column'
+        })
+                        })
+                }
+         },
+         scatter:function(){
+                if(typeof this.chartObj !== 'undefined' && Object.keys(this.chartObj).length){
+                        this.chartObj.series.forEach(function(e){
+                                e.update({
+            type: 'scatter'
+        })
+                        })
+                }
+         },
+         spline:function(){
+                if(typeof this.chartObj !== 'undefined' && Object.keys(this.chartObj).length){
+                        this.chartObj.series.forEach(function(e){
+                                e.update({
+            type: 'spline'
+        })
+                        })
+                }
+         },
+        panelFullscreen:function(e){
+                e.preventDefault() || e || '';
+                ($(this).is('.fullScreenElement')?$(this).removeClass('fullScreenElement'):$(this).addClass('active fullScreenElement'));
+                this.resize();
+        },*/
+        lodingStart: function(){
+            document.getElementById('loader').style.display="block";
+        },
+        lodingStop: function(){
+            document.getElementById('loader').style.display="none";
+        }
+    })
+</script>
+</dom-module>

@@ -1,0 +1,185 @@
+<dom-module id="login-page">
+  <style media="screen">
+    body {
+      background: #fafafa;
+      margin: 0;
+    }
+
+    h1 {
+      font-family: 'Helvetica Neue', sans-serif;
+      font-weight: 100;
+      color: #999;
+    }
+
+    .loaders {
+      text-align: center;
+    }
+
+    %style {
+      width: 8px;
+      height: 8px;
+      background: #F8CDCD;
+      border-radius: 50%;
+      transition: background .2s, box-shadow .2s;
+      animation-fill-mode: both;
+      animation: test 1s infinite ease-in-out;
+      box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+    }
+
+
+
+    .loader-circle {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: transparent;
+      display: inline-block;
+      border-top: 3px solid #F8B9B9;
+      border-right: 3px solid #F8B9B9;
+      border-bottom: 3px solid #F8B9B9;
+      border-left: 3px solid #F43D3C;
+      animation: loading .5s infinite linear;
+    }
+
+    .loader-gradient {
+      display: inline-block;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #F14C4B;
+      background: linear-gradient(to right, #F14C4B 10%, rgba(241, 76, 75, 0) 42%);
+      position: relative;
+      animation: load3 .8s infinite linear;
+      transform: translateZ(0);
+    }
+
+    .loader-gradient:before {
+      width: 50%;
+      height: 50%;
+      background: #F14C4B;
+      border-radius: 100% 0 0 0;
+      position: absolute;
+      top: 0;
+      left: 0;
+      content: '';
+    }
+
+    .loader-gradient:after {
+      background: #fafafa;
+      width: 75%;
+      height: 75%;
+      border-radius: 50%;
+      content: '';
+      margin: auto;
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      right: 0;
+    }
+
+    @keyframes load3 {
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+  </style>  
+<template>
+<div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="brand-login" align='center'>
+          <img src="../assets/login_assets/image/logo.png" class="img-responsive">
+          <h1></h1>
+          <h2></h2>
+        </div>
+      </div>
+    </div>
+
+<div class="row">
+      <div class="col-lg-12">
+        
+          <h2 class="form-signin-heading head">Login</h2>
+          <label for="inputEmail" class="sr-only">Email address</label>
+          <input type="email" id="inputEmail" value="stiwari@netlink.com" class="form-control email" placeholder="Email address" required autofocus>
+          <label for="inputPassword" class="sr-only">Password</label>
+          <input type="password" id="inputPassword" value="AA!11aaa" class="form-control password" placeholder="Password" required>
+          <div class="checkbox">
+            <label>
+              <input type="checkbox" value="remember-me"> Remember me
+            </label>
+          </div>
+          <button class="btn btn-lg btn-primary btn-block button" on-tap="_authenticateUser" type="submit">Sign in</button>
+          <p class="text-right mb-0"><a href="#" id="forgotbutton" class="forgot">Forgot password?</a></p>
+       
+      </div>
+    <div class="loaders" style="display:none" >
+      <div class="loader-gradient"></div>
+    </div>
+</div>
+<div class="row">
+      <div class="col-lg-5 col-lg-offset-4">
+        <div class="footer">
+          <p style="text-align:center;">Copyright 2016-2017 Netlink Software Pvt. Ltd.</p>
+        </div>
+      </div>
+</div>
+
+  </div>
+</template>
+<script>
+    Polymer({
+        is:"login-page",
+        properties:
+        {
+            
+        },
+        _authenticateUser:function(e)
+        {
+            $('.loaders').css("display","block");
+             var requestData = { 
+                        "data":
+                            {
+                                "email":$('#inputEmail').val(),
+                                "password":$('#inputPassword').val()                              
+                            }
+                      }; 
+                $.ajax({
+                    url: 'http://10.90.21.43:8888/login-service-mobile/login',
+                    type: 'POST',
+                    data: JSON.stringify(requestData),
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'json',
+                    async: false,
+                    success: function(data) 
+                    {
+                       // console.log(data)
+                        if(data.data.loginStatus=="SUCCESS")
+                        {
+                           // $('.loaders').css("display","none");
+                           console.log("SUCCESS");
+                            localStorage.setItem("name",data.data.name);
+                            localStorage.setItem("email",data.data.email);
+                            localStorage.setItem("accessToken",data.data.authenticationToken);
+                            //console.log(localStorage.getItem("accessToken"))
+                            window.location.href="carecloud.html"
+                           
+                                    
+                        }
+                       else
+                       {
+                                alert("Invalid Credentials");
+                       }
+                    }
+                });   
+        }
+    })
+</script>
+
+
+
+
+</dom-module>

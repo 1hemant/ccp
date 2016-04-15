@@ -1,0 +1,11 @@
+{
+  "name": "jsonfn",
+  "_cacheHeaders": {
+    "Content-Type": "text/html; charset=utf-8"
+  },
+  "main": "index",
+  "_source": "https://github.com/vkiryukhin/jsonfn",
+  "_target": "*",
+  "_originalSource": "https://github.com/vkiryukhin/jsonfn",
+  "_direct": true
+}

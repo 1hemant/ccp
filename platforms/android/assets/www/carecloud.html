@@ -1,0 +1,19 @@
+<html>
+<head>
+    <title> CareCloud </title>
+    <!-- Polymer Libraries -->    
+    <script src="bower_components/webcomponentsjs/webcomponents.js"></script>
+    <link rel="import"  href="bower_components/polymer/polymer.html"/>
+    <link rel="import" href="Config/carecloudConfig.html"/>
+    <link rel="import"  href="app-element.html"/>
+    <script>
+        if ((window.localStorage.getItem("accessToken")) == "0"){
+            window.location.href="index.html";
+        }
+    </script>
+</head>
+<body>
+<app-element></app-element>
+</body>
+</html>
+
