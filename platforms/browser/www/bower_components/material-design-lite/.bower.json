@@ -1,0 +1,11 @@
+{
+  "name": "material-design-lite",
+  "_cacheHeaders": {
+    "Content-Type": "text/html; charset=utf-8"
+  },
+  "main": "index",
+  "_source": "https://github.com/google/material-design-lite",
+  "_target": "*",
+  "_originalSource": "https://github.com/google/material-design-lite",
+  "_direct": true
+}

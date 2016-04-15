@@ -1,11 +1,11 @@
 
 <dom-module id="dashboard-demo">
-<script src="../scripts/getWorkboardData.js"></script>
-<script src="../scripts/getKettleData.js"></script>    
-<script src="../scripts/getVisualisationData.js"></script>
-<link rel="import" href="../Config/config.html"/>
 
-
+    <link rel-="import" href="../Config/config.html"/>
+    <script src="../scripts/getVisualisationData.js" type="text/javascript"></script>
+    <script src="../scripts/getDashboardData.js" type="text/javascript"></script>
+    <script src="../scripts/getKettleData.js" type="text/javascript"></script>
+    <script src="../scripts/getWorkboardData.js" type="text/javascript"></script>
 <template>
      <div class="card-wrap">
           <div class="container">
@@ -18,14 +18,14 @@
           </div>
         </div> 
     </div>
-    <div id="loader" style="display:none"</div>
+    <div id="loader" style="display:none"></div>
     <createHighchart-element></createHighchart-element>
 </template>
 <script>
-    var workboardData;
-    var kettleData;
-    var visualData; 
-    var option = [];
+    var workboardData = []; //Will be used to store JSON data.
+    var kettleData = [];  //Will be used to store JSON data.
+    var visualData = []; //Will be used to store JSON data.
+    var option = []; //Will be used for the high charts.
     var workboardColumnInfo = [];
     //var vData;
     
@@ -44,8 +44,10 @@
             var self=this;
             //var requestData = {"data":{"workboard-id":id,"params":{}}}; 
             console.log(id);
-            self.lodingStart();
+            self.loadingStart(); 
+            console.log("loading start");
             $.when(
+                    console.log("when block"),
                     workboardData = getWorkboardData(id),
                     visualData = getVisualisationData(id),
                     kettleData = getKettleData(id)
@@ -91,6 +93,7 @@
                         
             ).done(function(){
                      self.loadingStop();
+                     console.log("Loading stop");
                  });
             $('#container').css("display","block");
             //self.startfunction(workboardData,visualData,kettleData);
@@ -100,14 +103,14 @@
         },
         createDashboard1:function()
         {    
-            //console.log(workboardData);
+            console.log("createDashboard1:function");
               var self=this;
               $.each(workboardData,function(index,value)
               {
                
-                   workboard.push(value.configuration);
-                   workboardColumnInfo.push(workboardData[index].configuration.columnInfo);
-                  $.each(visualData,function(i,e)
+                    workboard.push(value.configuration);
+                    workboardColumnInfo.push(workboardData[index].configuration.columnInfo);
+                    $.each(visualData,function(i,e)
                    {
                           if(index==i)                                   
                               visualisation.push(e.configuration);
@@ -119,6 +122,7 @@
                    });
                    //console.log(JSONfn.stringify(visualData[index].configuration.result));
                    option = JSONfn.stringify(visualData[index].configuration.result);
+                   console.log(option);
                    self.normalize(index,workboard,visualisation,kettle,option,workboardColumnInfo)
                     self.processChartData(index,workboard,visualisation,kettle,option,workboardColumnInfo);             
               }); 
@@ -448,10 +452,12 @@
                 ($(this).is('.fullScreenElement')?$(this).removeClass('fullScreenElement'):$(this).addClass('active fullScreenElement'));
                 this.resize();
         },*/
-        lodingStart: function(){
+        loadingStart: function(){
+            console.log("Loader function called");
             document.getElementById('loader').style.display="block";
         },
-        lodingStop: function(){
+        loadingStop: function(){
+            console.log("Loader function stopped");
             document.getElementById('loader').style.display="none";
         }
     })

@@ -1,0 +1,34 @@
+{
+  "name": "jsonfn-bower",
+  "main": "jsonfn.min.js",
+  "version": "0.6.2",
+  "homepage": "https://github.com/robinradic/jsonfn",
+  "authors": [
+    "Vadim Kiryukhin"
+  ],
+  "description": "Javascript (both node.js and browser) plugin to stringify / parse / clone jsvascript objects with",
+  "moduleType": [
+    "amd",
+    "globals",
+    "node"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "src/assets/vendor",
+    "test",
+    "tests"
+  ],
+  "_release": "0.6.2",
+  "_resolution": {
+    "type": "version",
+    "tag": "v0.6.2",
+    "commit": "ca2ebe801ce66968ca68ae50ab63694efeb07ee3"
+  },
+  "_source": "https://github.com/robinradic/jsonfn.git",
+  "_target": "^0.6.2",
+  "_originalSource": "jsonfn-bower",
+  "_direct": true
+}
