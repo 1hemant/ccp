@@ -430,7 +430,8 @@
     attached:function()
     {               var self=this;     
          $.ajax({
-                url: "http://10.90.21.43:8888/repository-service/getRepository",                
+                //url: "http://10.90.21.43:8888/repository-service/getRepository",  
+                url: "https://rsh-analytics.thecarecloud.com/repository-service/getRepository",  
                 type: "POST",
                 beforeSend: function(xhr){xhr.setRequestHeader('AccessToken',localStorage.getItem("accessToken"));},
                 success: function(object)

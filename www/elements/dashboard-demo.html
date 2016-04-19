@@ -39,18 +39,18 @@
 
     Polymer({
         is:"dashboard-demo",
-        createDashboard:function(id)
+        createDashboard:function(userId,workboard_id)
         {
             var self=this;
             //var requestData = {"data":{"workboard-id":id,"params":{}}}; 
-            console.log(id);
+            console.log(userId,workboard_id);
             self.loadingStart(); 
             console.log("loading start");
             $.when(
                     console.log("when block"),
-                    workboardData = getWorkboardData(id),
-                    visualData = getVisualisationData(id),
-                    kettleData = getKettleData(id)
+                    workboardData = getWorkboardData(userId,workboard_id),
+                    visualData = getVisualisationData(userId,workboard_id),
+                    kettleData = getKettleData(userId,workboard_id)
                     /*
                 $.ajax({
                      url: "http://10.90.21.43:8888/workboard-service/getWorkboard?workboard=".concat(id),               

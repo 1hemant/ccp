@@ -5,11 +5,15 @@
  */
 
 
-function getDashboardData() {
-    var dashboardData
+function getDashboardData(userId,workboard_id) {
+    var dashboardData;
+    var requestData ={"data":{"userId":userId}};
     $.ajax({
-        url: "http://10.90.21.43:8888/repository-service/getRepository",                
+        url: "http://10.90.21.43:8081/repository-service/getRepository",
         type: "POST",
+        data: JSON.stringify(requestData),
+        contentType: 'application/json; charset=utf-8',
+        dataType: 'json',
         beforeSend: function(xhr){xhr.setRequestHeader('AccessToken',localStorage.getItem("accessToken"));},
         success: function(object)
         { 

@@ -4,15 +4,10 @@
  * and open the template in the editor.
  */
 
-function getKettleData(id) {
-    var requestData = {"data":{ 
-                "workboard-id":id,
-                "params":{
-                    
-                }
-                }}; 
+function getKettleData(userId,workboard_id) {
+    var requestData ={"data":{"userId":userId,"workboard-id":workboard_id,"params":{"31":"4"}}};
 $.ajax({
-    url: 'http://10.90.21.43:8888/kettle-service/kettle',
+    url: 'http://10.90.21.43:8081/kettle-service/kettle',
     type: 'POST',
     beforeSend: function(xhr){xhr.setRequestHeader('AccessToken',localStorage.getItem('accessToken'));},
     data: JSON.stringify(requestData),

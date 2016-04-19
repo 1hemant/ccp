@@ -3,10 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-function getWorkboardData(id) {
+function getWorkboardData(userId,workboard_id) {
+var requestData = {"data":{"userId":userId,"workboard-id":workboard_id}};
 $.ajax({
-     url: "http://10.90.21.43:8888/workboard-service/getWorkboard?workboard=".concat(id),               
+     url: "http://10.90.21.43:8081/workboard-service/get-workboard",               
      type: "POST",
+     data: JSON.stringify(requestData),
+     dataType: 'json',
      beforeSend: function(xhr){xhr.setRequestHeader('AccessToken',localStorage.getItem("accessToken"));},
      success: function(object)
      { 
