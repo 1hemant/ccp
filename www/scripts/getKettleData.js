@@ -9,7 +9,7 @@ function getKettleData(userId,workboard_id) {
 $.ajax({
     url: 'http://10.90.21.43:8081/kettle-service/kettle',
     type: 'POST',
-    beforeSend: function(xhr){xhr.setRequestHeader('AccessToken',localStorage.getItem('accessToken'));},
+    //beforeSend: function(xhr){xhr.setRequestHeader('AccessToken',localStorage.getItem('accessToken'));},
     data: JSON.stringify(requestData),
     contentType: 'application/json; charset=utf-8',
     dataType: 'json',

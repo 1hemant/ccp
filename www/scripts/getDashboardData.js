@@ -14,7 +14,7 @@ function getDashboardData(userId,workboard_id) {
         data: JSON.stringify(requestData),
         contentType: 'application/json; charset=utf-8',
         dataType: 'json',
-        beforeSend: function(xhr){xhr.setRequestHeader('AccessToken',localStorage.getItem("accessToken"));},
+        //beforeSend: function(xhr){xhr.setRequestHeader('AccessToken',localStorage.getItem("accessToken"));},
         success: function(object)
         { 
            dashboardData=object;     
