@@ -125,7 +125,7 @@
                    //console.log(JSONfn.stringify(visualData[index].configuration.result));
                    option = JSONfn.stringify(visualData.data[index].configuration.result);
                    //console.log(option);
-                   //self.normalize(index,workboard,visualisation,kettle,option,workboardColumnInfo)
+                    self.normalize(index,workboard,visualisation,kettle,option,workboardColumnInfo)
                     self.processChartData(index,workboard,visualisation,kettle,option,workboardColumnInfo);             
               }); 
         },

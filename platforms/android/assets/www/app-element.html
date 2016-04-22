@@ -113,7 +113,7 @@
                     
                   <ul class="submenu-2" style="display:block">
                       <template is="dom-repeat" items="{{dbNames.value}}" as="value">
-                    <li><a class=" waves-attach" id="{{value.dashboardId}}" on-tap="_onSubItemsTapped">{{value.name}}</a></li>
+                    <li><a class="waves-attach" id="{{value.dashboardId}}" on-tap="_onSubItemsTapped">{{value.name}}</a></li>
 
                       </template>
                   </ul>
@@ -418,25 +418,38 @@
 
   <script>
     // element registration
+    var owner;
     Polymer({
       is: "app-element",
-
       // add properties and methods on the element's prototype
 
       properties: {
         // declare properties for the element's public API
-
+        userId: {
+          type: String,
+          value: 6
+        },
+        workboard_id:{
+            type: String,
+            value: 3
+        }
         },
     attached:function()
-    {               var self=this;     
+    {               
+        var self=this; 
+        var requestData ={"data":{"userId":this.userId}};
          $.ajax({
                 //url: "http://10.90.21.43:8888/repository-service/getRepository",  
                 url: "https://rsh-analytics.thecarecloud.com/repository-service/getRepository",  
                 type: "POST",
-                beforeSend: function(xhr){xhr.setRequestHeader('AccessToken',localStorage.getItem("accessToken"));},
+                data: JSON.stringify(requestData),
+                contentType: 'application/json; charset=utf-8',
+                dataType: 'json',
+                //beforeSend: function(xhr){xhr.setRequestHeader('AccessToken',localStorage.getItem("accessToken"));},
                 success: function(object)
                 {                      
-                    self.data=object.dashboards;                  
+                    self.data=object.data.dashboards;
+                    owner=object.data.dashboards[0].value[1].owner;
                 }
             })
     },     
@@ -497,7 +510,12 @@
     {
         $('#home').css("display","none");
         $('#dashboard').css("display","block");
-        document.getElementsByTagName('dashboard-demo')[0].createDashboard(event.target.getAttribute("id"));
+        //console.log("_onSubItemsTapped:function called");
+        id=event.target.getAttribute("id");
+        //console.log(event.target.getAttribute("id"));
+        //console.log(owner,"owner");
+        //console.log(id,"id");
+        document.getElementsByTagName('dashboard-demo')[0].createDashboard(owner,id);
         //console.log(document.getElementsByTagName('dashboard-demo'));
         //window.alert(event.target.getAttribute("id"));
     }
